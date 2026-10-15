@@ -77,7 +77,7 @@ def main():
                                "quote": html_inner(desc) if desc else ""})
 
     cl = s.select_one(".closing")
-    slides.append({"type": "closing", "title": txt(cl.select_one("h2")),
+    slides.append({"type": "closing", "title": txt(cl.select_one("h2")).replace("💛", "").strip() + " 💛",
                    "text": txt(cl.select_one("p")), "final": txt(cl.select_one("strong"))})
 
     tpl = (ROOT / "scripts" / "tv_template.html").read_text(encoding="utf-8")
