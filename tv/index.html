@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tu huella deja huella · Presentación Día del Profesor 2026</title>
+<meta name="description" content="Presentación automática para pantallas: Día del Profesor 2026, Estación Docente Duoc UC Sede San Joaquín.">
+<link rel="icon" href="https://diadelprofesoruadd2026.vercel.app/img/huella.png">
+<style>
+:root{--y:#FFB800;--k:#000;--w:#fff;--g:#bdbdbd;--ease:cubic-bezier(.2,.8,.2,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:var(--w)}
+body.idle{cursor:none}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;background:#000;overflow:hidden}
+
+/* ---------- chrome ---------- */
+#top{position:absolute;left:0;right:0;top:0;height:120px;display:flex;align-items:center;justify-content:space-between;padding:0 80px;z-index:20;background:linear-gradient(#000e,#0000);transition:opacity .6s}
+#top img{height:52px}
+#top .sede{font-size:22px;color:#ddd;border-left:2px solid #555;padding-left:22px;margin-left:22px}
+#top .brand{display:flex;align-items:center}
+#top .tag{font-size:22px;letter-spacing:5px;font-weight:700;color:var(--y)}
+#bottom{position:absolute;left:80px;right:80px;bottom:44px;z-index:20;display:flex;gap:8px;transition:opacity .6s}
+#bottom i{flex:1;height:6px;border-radius:3px;background:#ffffff26;overflow:hidden;position:relative}
+#bottom i b{position:absolute;inset:0;width:0;background:var(--y)}
+#bottom i.done b{width:100%}
+body.videomode #top,body.videomode #bottom{opacity:0}
+
+/* ---------- slides ---------- */
+.slide{position:absolute;inset:0;visibility:hidden;opacity:0}
+.slide.on{visibility:visible;opacity:1}
+.slide .bg{position:absolute;inset:0;background:radial-gradient(ellipse at 80% 15%,#ffb80018,#0000 55%),#000}
+.slide .bg.light{background:radial-gradient(ellipse at 15% 85%,#ffb80020,#0000 50%),#0b0b0b}
+.pad{position:absolute;left:120px;right:120px;top:150px;bottom:110px}
+
+/* entrance animations */
+.a{opacity:0}
+.on .a{animation:var(--an,up) .9s var(--ease) both;animation-delay:var(--d,0s)}
+@keyframes up{from{opacity:0;transform:translateY(60px)}to{opacity:1;transform:none}}
+@keyframes left{from{opacity:0;transform:translateX(-90px)}to{opacity:1;transform:none}}
+@keyframes right{from{opacity:0;transform:translateX(90px)}to{opacity:1;transform:none}}
+@keyframes zoom{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes grow{from{opacity:0;transform:scaleX(0)}to{opacity:1;transform:scaleX(1)}}
+@keyframes kb{from{transform:scale(1.14)}to{transform:scale(1)}}
+@keyframes pulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 #ffb80000)}50%{transform:scale(1.05);filter:drop-shadow(0 0 40px #ffb80088)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+.eyebrow{color:var(--y);font-weight:700;letter-spacing:6px;font-size:26px;text-transform:uppercase}
+.rule{display:block;height:8px;width:160px;background:var(--y);border-radius:4px;transform-origin:left}
+.on .rule{--an:grow}
+
+/* video */
+.s-video video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+#sound{position:absolute;right:60px;bottom:60px;z-index:30;background:#000c;border:2px solid var(--y);color:#fff;font-size:26px;padding:16px 26px;border-radius:40px;display:none;align-items:center;gap:12px}
+#sound.show{display:flex;animation:fade .6s both}
+
+/* cover */
+.s-cover h1{font-size:190px;line-height:.95;letter-spacing:-7px;font-weight:700;margin:34px 0 46px}
+.s-cover h1 span{display:block}
+.s-cover p{font-size:40px;line-height:1.4;color:#e8e8e8;max-width:1050px;margin-bottom:20px}
+.s-cover p strong{color:var(--y)}
+.huella{position:absolute;right:150px;top:230px;width:520px;height:520px}
+.huella .ring{position:absolute;inset:-60px;border-radius:50%;border:3px dashed #ffb80055;animation:spin 40s linear infinite}
+.huella img{width:100%;animation:pulse 3.2s ease-in-out infinite}
+
+/* intro / category */
+.center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 220px}
+.center h2{font-size:110px;line-height:1.05;letter-spacing:-3px;margin:30px 0}
+.center p{font-size:42px;line-height:1.45;color:#ddd;max-width:1350px}
+.catnum{font-size:300px;font-weight:700;color:transparent;-webkit-text-stroke:3px #ffb80066;position:absolute;right:120px;bottom:60px;line-height:1}
+.caticon{width:190px;height:190px;border-radius:40px;background:#ffffff10;border:2px solid #ffb80055;display:grid;place-items:center;font-size:110px;animation:floaty 4s ease-in-out infinite}
+.on .caticon{animation:zoom .9s var(--ease) both,floaty 4s ease-in-out 1s infinite}
+
+/* teacher */
+.chip{display:inline-flex;align-items:center;gap:14px;background:#ffffff12;border:1px solid #ffb80066;color:var(--y);font-size:24px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:12px 26px;border-radius:40px}
+.s-teacher .photo{position:absolute;left:120px;top:170px;width:700px;height:790px;border-radius:28px;overflow:hidden;border-bottom:12px solid var(--y);background:#222}
+.s-teacher .photo img{width:100%;height:100%;object-fit:cover;object-position:center 25%}
+.on .kb img{animation:kb 11s ease-out both}
+.s-teacher .info{position:absolute;left:900px;right:120px;top:150px;bottom:110px;display:flex;flex-direction:column;justify-content:center}
+.name{font-size:84px;line-height:1.05;letter-spacing:-2px;margin:28px 0 12px}
+.school{font-size:36px;color:var(--y);font-weight:700;margin-bottom:36px}
+.quote{position:relative;font-style:italic;color:#eee;line-height:1.45;padding-left:46px;border-left:6px solid var(--y)}
+.quote strong{font-style:normal;color:var(--y)}
+.quote:before{content:"“";position:absolute;left:-14px;top:-100px;font-size:220px;color:#ffb80033;font-style:normal;font-family:Georgia,serif}
+
+/* story */
+.s-story .head{position:absolute;left:120px;right:120px;top:150px}
+.s-story h3{font-size:70px;line-height:1.08;letter-spacing:-1.5px;margin:22px 0 0}
+.people{position:absolute;left:120px;right:120px;top:400px;display:flex;gap:36px}
+.p-card{flex:0 0 auto;width:300px}
+.p-card .ph{width:300px;height:300px;border-radius:24px;overflow:hidden;border-bottom:8px solid var(--y);background:#222}
+.p-card .ph img{width:100%;height:100%;object-fit:cover;object-position:center 25%}
+.p-card b{display:block;font-size:30px;margin:18px 0 6px;line-height:1.15}
+.p-card small{display:block;font-size:22px;color:var(--y);font-weight:700;line-height:1.3}
+.s-story .body{position:absolute;right:120px;top:400px;bottom:120px;display:flex;flex-direction:column;justify-content:center}
+.ach{margin-top:30px;font-size:26px;line-height:1.45;background:#ffb80018;border:1px solid #ffb80055;border-radius:18px;padding:22px 28px;color:#f2f2f2}
+.ach strong{color:var(--y)}
+
+/* closing */
+.s-closing h2{font-size:112px;letter-spacing:-3px;white-space:nowrap}
+.s-closing .final{margin-top:50px;font-size:76px;font-weight:700;color:#000;background:var(--y);padding:18px 54px;border-radius:20px}
+.heart{display:inline-block;animation:pulse 1.6s ease-in-out infinite}
+
+/* wipe transition */
+#wipe{position:absolute;inset:0;z-index:40;pointer-events:none;transform:translateX(-101%)}
+#wipe:before,#wipe:after{content:"";position:absolute;top:0;bottom:0}
+#wipe:before{left:0;width:100%;background:var(--y)}
+#wipe:after{left:100%;width:30%;background:linear-gradient(90deg,#ffb800aa,#0000)}
+#wipe.go{animation:wipe 1.1s cubic-bezier(.7,0,.3,1) forwards}
+@keyframes wipe{0%{transform:translateX(-131%)}100%{transform:translateX(101%)}}
+
+/* start overlay */
+#start{position:absolute;inset:0;z-index:50;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:40px;cursor:pointer}
+#start.show{display:flex}
+#start .btn{width:180px;height:180px;border-radius:50%;background:var(--y);color:#000;display:grid;place-items:center;font-size:70px;padding-left:12px;animation:pulse 2s infinite}
+#start p{font-size:40px;color:#ddd}
+#paused{position:absolute;left:50%;top:60px;transform:translateX(-50%);z-index:30;background:#000c;border:2px solid var(--y);padding:12px 30px;border-radius:30px;font-size:26px;display:none}
+body.pause #paused{display:block}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="slides"></div>
+  <div id="top"><div class="brand"><img src="https://diadelprofesoruadd2026.vercel.app/img/logo-duoc.png" alt="Duoc UC"><span class="sede">Sede San Joaquín · Estación Docente</span></div><div class="tag">DÍA DEL PROFESOR 2026</div></div>
+  <div id="bottom"></div>
+  <div id="wipe"></div>
+  <div id="sound">🔇 Presiona cualquier tecla o haz clic para activar el sonido</div>
+  <div id="paused">⏸ En pausa · barra espaciadora para continuar</div>
+  <div id="start"><div class="btn">▶</div><p>Haz clic o presiona OK para comenzar</p></div>
+</div>
+<script>
+const SLIDES=[{"type": "video", "src": "https://diadelprofesoruadd2026.vercel.app/video/saludo-director.mp4", "poster": "https://diadelprofesoruadd2026.vercel.app/img/saludo-poster.jpg"}, {"type": "cover", "eyebrow": "HOY QUEREMOS CELEBRARTE", "paras": ["Hoy queremos hacer una pausa para decirte algo muy simple: <strong>¡gracias!</strong>", "Gracias por cada clase, cada idea, cada conversación y por acompañar a tus estudiantes en su aprendizaje.", "Enseñar es mucho más que compartir conocimientos: es acompañar, inspirar y dejar huella."]}, {"type": "intro", "eyebrow": "NUESTRA COMUNIDAD DOCENTE", "title": "Historias que queremos destacar", "text": "Hoy queremos reconocer a docentes que, desde distintos lugares y de distintas maneras, están dejando una huella especial en nuestra comunidad."}, {"type": "category", "num": "01", "icon": "💡", "title": "Buenas Prácticas Docentes", "text": "Nuevas maneras de enseñar, crear y ayudar a que nuestros estudiantes aprendan de forma significativa."}, {"type": "teacher", "cat": "Buenas Prácticas Docentes", "icon": "💡", "name": "Gonzalo Valenzuela", "school": "Docente de Maquinaria y Vehículos Pesados", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/gonzalo-valenzuela.jpg", "quote": "Empleo elementos reales en las clases teóricas para activar conocimientos previos y contextualizar el aprendizaje, favoreciendo una experiencia de aula más práctica y significativa."}, {"type": "teacher", "cat": "Buenas Prácticas Docentes", "icon": "💡", "name": "Freddy Utreras", "school": "Docente del Programa Transversal de Inglés", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/fredy-utreras.jpg", "quote": "Busco motivar a mis estudiantes y generar un impacto positivo en su aprendizaje, promoviendo su participación y confianza en el uso del inglés."}, {"type": "teacher", "cat": "Buenas Prácticas Docentes", "icon": "💡", "name": "María José Salazar", "school": "Docente del Programa Transversal de Inglés", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/maria-jose-salazar.jpg", "quote": "Promuevo una relación cercana y empática con mis estudiantes, utilizando la comunicación para generar confianza, fomentar la participación y favorecer su protagonismo en el aprendizaje."}, {"type": "teacher", "cat": "Buenas Prácticas Docentes", "icon": "💡", "name": "M.ª Cristina Rodríguez", "school": "Docente Escuela de Salud y Bienestar (TENS)", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/maria-cristina-rodriguez.jpg", "quote": "Incorporo buenas prácticas inclusivas para responder a la diversidad de mis estudiantes y favorecer su participación y aprendizaje."}, {"type": "teacher", "cat": "Buenas Prácticas Docentes", "icon": "💡", "name": "Apostol Dimitropolus", "school": "Docente Escuela de Salud y Bienestar", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/apostol-dimitropulos.jpg", "quote": "Fomento un clima de aula positivo, acogiendo y promoviendo las intervenciones de mis estudiantes en un ambiente de respeto."}, {"type": "teacher", "cat": "Buenas Prácticas Docentes", "icon": "💡", "name": "Franco Sanguinetti", "school": "Docente Escuela de Ingeniería y Recursos Naturales", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/franco-sanguinetti.jpg", "quote": "Promuevo el aprendizaje mediante la rigurosidad y la claridad en mis clases, fortaleciendo el compromiso de mis estudiantes con su formación."}, {"type": "category", "num": "02", "icon": "🎓", "title": "Becados", "text": "Docentes que siguen aprendiendo y fortaleciendo sus conocimientos a través de becas de estudio."}, {"type": "story", "cat": "Becados", "icon": "🎓", "label": "BECA FAD 2026", "title": "Adjudicación de la Beca de Formación Académica Disciplinar (FAD) 2026", "people": [{"name": "Nancy Bautista", "school": "Docente del Programa Transversal de Lenguaje", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/nancy-bautista.jpg"}, {"name": "Jocelin Andrea Jofre Seguel", "school": "Docente del Programa Transversal de Inglés", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/jocelin-jofre.jpg"}], "quote": "Nos adjudicamos la Beca de Formación Académica Disciplinar (FAD) 2026, un reconocimiento otorgado en el marco de la Beca FAD 2026 de Duoc UC, que busca fortalecer la formación continua y la especialización disciplinar de sus docentes. Esta beca nos permitirá profundizar conocimientos y aplicar los aprendizajes en nuestra práctica docente.", "achievements": ""}, {"type": "category", "num": "03", "icon": "🔬", "title": "Investigación Aplicada y Corporativa", "text": "Preguntas e ideas que se convierten en conocimiento y soluciones para nuestra comunidad."}, {"type": "story", "cat": "Investigación Aplicada y Corporativa", "icon": "🔬", "label": "PROYECTO DE INVESTIGACIÓN APLICADA", "title": "“Con tu voz”", "people": [{"name": "Carla Navia", "school": "Docente del Programa de Emprendimiento", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/carla-navia.jpg"}, {"name": "Iris Navarrete", "school": "Docente del Programa de Emprendimiento", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/iris-navarrete.jpg"}], "quote": "Nuestro proyecto, <strong>“Con tu voz”</strong>, desarrolla una plataforma web inclusiva para apoyar la vocalización y comunicación de niñas y niños sordos, integrando tecnología, recursos visuales y Lengua de Señas Chilena (LSCh).", "achievements": "<strong>Nuestros logros:</strong> nos adjudicamos fondos de DIAIT 2025 y 2026 en Desarrollo Experimental y Escalamiento, y obtuvimos el primer lugar en Póster Mejor Evaluado del Congreso de Investigación I2T Duoc UC 2026."}, {"type": "story", "cat": "Investigación Aplicada y Corporativa", "icon": "🔬", "label": "PROYECTO DE INNOVACIÓN CORPORATIVA", "title": "“Networking Inicial”", "people": [{"name": "Elizabeth Valenzuela", "school": "Docente de Maquinaria y Vehículos Pesados", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/elizabeth-valenzuela.jpg"}, {"name": "Nancy Bautista", "school": "Docente del Programa Transversal de Lenguaje", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/nancy-bautista.jpg"}], "quote": "Nuestro proyecto, <strong>“Networking Inicial”</strong>, busca acercar a estudiantes de primer y segundo año al mundo laboral de su carrera, a través de un desafío que les permita vivir durante un día una experiencia en una empresa, conocer su entorno laboral y proyectarse en su futuro profesional.", "achievements": ""}, {"type": "story", "cat": "Investigación Aplicada y Corporativa", "icon": "🔬", "label": "PROYECTO DE INNOVACIÓN CORPORATIVA", "title": "Cron App", "people": [{"name": "Melisa Tapia", "school": "Docente Escuela de Salud y Bienestar", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/melisa-tapia.jpg"}, {"name": "Claudia Orellana", "school": "Docente Escuela de Salud y Bienestar", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/claudia-orellana.jpg"}, {"name": "Guillermo Villacura Torres", "school": "Docente Escuela de Informática y Telecomunicaciones", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/guillermo-villacura.jpg"}], "quote": "Nuestro proyecto es <strong>Cronapp</strong>, una plataforma tecnológica orientada al apoyo del seguimiento y gestión de personas con enfermedades crónicas, principalmente Diabetes Mellitus tipo 2 e Hipertensión Arterial. Nace de la convicción de que el cuidado de estas condiciones no termina en la consulta, sino que se construye día a día. Por eso, buscamos acercar la tecnología a pacientes y equipos de salud, facilitando un acompañamiento más continuo, ordenado y oportuno. Para nosotros, este proyecto es también una oportunidad de unir disciplinas y de mostrar a nuestros estudiantes cómo la innovación puede ponerse al servicio del bienestar de las personas y de su calidad de vida.", "achievements": ""}, {"type": "story", "cat": "Investigación Aplicada y Corporativa", "icon": "🔬", "label": "PROYECTO DE INNOVACIÓN CORPORATIVA", "title": "SegurApp", "people": [{"name": "Guillermo Villacura Torres", "school": "Docente Escuela de Informática y Telecomunicaciones", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/guillermo-villacura.jpg"}], "quote": "Mi proyecto es <strong>SegurApp</strong>, una plataforma tecnológica orientada a fortalecer la seguridad en la comuna de San Joaquín, donde los vecinos cumplen un rol central al reportar los incidentes que ocurren en la comuna. A su vez, los inspectores municipales son los encargados de atender cada uno de los incidentes reportados por la comunidad.", "achievements": ""}, {"type": "category", "num": "04", "icon": "🌎", "title": "Vinculación y Experiencia Profesional", "text": "Experiencias que conectan el aprendizaje con la industria y el mundo laboral."}, {"type": "teacher", "cat": "Vinculación y Experiencia Profesional", "icon": "🌎", "name": "Manuel Madariaga", "school": "Docente de Maquinaria y Vehículos Pesados", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/manuel-madariaga.jpg", "quote": "Lidero el proyecto de mantenimiento preventivo en Viña Haras de Pirque, donde cerca de 40 estudiantes de Ingeniería en Mantenimiento Industrial de Duoc UC ponen en práctica sus conocimientos a través de ocho jornadas de trabajo en terreno, realizando inspecciones y diagnósticos para contribuir a reducir los mantenimientos correctivos y mejorar la disponibilidad de los equipos. Esta experiencia representa una valiosa oportunidad para fortalecer las competencias técnicas de nuestros estudiantes, acercándolos a los desafíos reales de la industria y promoviendo una cultura de prevención, aprendizaje práctico y mejora continua."}, {"type": "category", "num": "05", "icon": "⭐", "title": "Reconocimiento externo", "text": "Un trabajo docente que también recibe reconocimiento fuera de nuestra institución."}, {"type": "story", "cat": "Reconocimiento externo", "icon": "⭐", "label": "RECONOCIMIENTO EXTERNO", "title": "Incorporación como miembro honorario de Sigma Nursing", "people": [{"name": "Claudia Marcela Escobar Osorio", "school": "Docente Escuela de Salud y Bienestar", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/claudia-escobar.jpg"}], "quote": "Fui incorporada como miembro honorario de Sigma Nursing. Recibí este reconocimiento, otorgado por el Capítulo Chileno Alpha Beta Omicron de Sigma Nursing, con sede en la Pontificia Universidad Católica de Chile, por mi trayectoria académica y profesional, y mi compromiso con la excelencia, el liderazgo y el desarrollo de la enfermería.", "achievements": ""}, {"type": "story", "cat": "Reconocimiento externo", "icon": "⭐", "label": "PARTICIPACIÓN EN EVENTOS ACADÉMICOS", "title": "Participación en el XXII Congreso Chileno de Neumología Pediátrica", "people": [{"name": "Ana Lorena Moya Isamitt", "school": "Docente Escuela de Salud y Bienestar", "photo": "https://diadelprofesoruadd2026.vercel.app/img/docentes/ana-lorena-moya.jpg"}], "quote": "Como docente y enfermera, participaré en el XXII Congreso Chileno de Neumología Pediátrica, que se realizará del 22 al 24 de octubre de 2026. En esta instancia presentaré el trabajo “Preparémonos juntos para respirar mejor”, aceptado en modalidad e-póster, contribuyendo al intercambio de conocimientos y experiencias en el ámbito de la salud respiratoria pediátrica.", "achievements": ""}, {"type": "closing", "title": "Gracias por dejar huella 💛", "text": "Gracias por enseñar, acompañar, compartir y seguir aprendiendo. Gracias por ser parte de esta comunidad y por dejar tu huella en ella.", "final": "¡Feliz Día del Profesor!"}];
+const DUR=10000, VIDEO_MAX=120000;
+const HUELLA="https://diadelprofesoruadd2026.vercel.app/img/huella.png";
+const $=s=>document.querySelector(s), esc=s=>(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const A=(an,d,cls="",st="")=>`class="a ${cls}" style="--an:${an};--d:${d}s;${st}"`;
+function qsize(t){const n=t.replace(/<[^>]+>/g,"").length;return n>620?30:n>460?34:n>320?38:n>200?44:50}
+
+function render(s,i){
+  switch(s.type){
+  case "video": return `<div class="slide s-video"><video playsinline preload="auto" poster="${s.poster}" src="${s.src}"></video></div>`;
+  case "cover": return `<div class="slide s-cover"><div class="bg"></div><div class="pad">
+      <div ${A("left",.2,"eyebrow")}>${esc(s.eyebrow)}</div>
+      <h1><span ${A("up",.4)}>Tu huella</span><span ${A("up",.6)}>deja huella</span></h1>
+      ${s.paras.map((p,k)=>`<p ${A("up",.9+k*.25)}>${p}</p>`).join("")}</div>
+      <div class="huella a" style="--an:zoom;--d:.5s"><div class="ring"></div><img src="${HUELLA}" alt=""></div></div>`;
+  case "intro": return `<div class="slide s-intro"><div class="bg light"></div><div class="center">
+      <div ${A("fade",.2,"eyebrow")}>${esc(s.eyebrow)}</div><span ${A("grow",.4,"rule","margin-top:30px")}></span>
+      <h2 ${A("up",.6)}>${esc(s.title)}</h2><p ${A("up",.9)}>${esc(s.text)}</p></div></div>`;
+  case "category": return `<div class="slide s-category"><div class="bg"></div><div class="catnum a" style="--an:right;--d:.3s">${s.num}</div><div class="center">
+      <div class="caticon">${s.icon}</div>
+      <div ${A("fade",.5,"eyebrow","margin-top:44px")}>Historias que dejan huella · ${s.num}</div>
+      <h2 ${A("up",.7)}>${esc(s.title)}</h2><p ${A("up",1)}>${esc(s.text)}</p></div></div>`;
+  case "teacher": return `<div class="slide s-teacher"><div class="bg"></div>
+      <div class="photo kb a" style="--an:left;--d:.2s">${s.photo?`<img src="${s.photo}" alt="">`:""}</div>
+      <div class="info"><div><span ${A("fade",.4,"chip")}>${s.icon} ${esc(s.cat)}</span></div>
+      <div ${A("up",.6,"name")}>${esc(s.name)}</div><div ${A("up",.8,"school")}>${esc(s.school)}</div>
+      ${s.quote?`<div ${A("right",1.1,"quote",`font-size:${qsize(s.quote)+(s.quote.length<260?6:0)}px`)}>${s.quote}</div>`:""}</div></div>`;
+  case "story": {
+      const n=s.people.length, pw=n>2?250:n===1?400:300;
+      const body=`<div ${A("right",1.2,"quote",`font-size:${qsize(s.quote)}px`)}>${s.quote}</div>`+(s.achievements?`<div ${A("up",1.6,"ach")}>${s.achievements}</div>`:"");
+      return `<div class="slide s-story"><div class="bg"></div><div class="head">
+      <span ${A("fade",.2,"chip")}>${s.icon} ${esc(s.label)}</span><h3 ${A("up",.4)}>${esc(s.title)}</h3></div>
+      <div class="people">${s.people.map((p,k)=>`<div class="p-card a" style="--an:up;--d:${.6+k*.18}s;width:${pw}px"><div class="ph kb" style="width:${pw}px;height:${pw}px">${p.photo?`<img src="${p.photo}" alt="">`:""}</div><b>${esc(p.name)}</b><small>${esc(p.school)}</small></div>`).join("")}</div>
+      <div class="body" style="left:${120+n*(pw+36)+50}px">${body}</div></div>`;}
+  case "closing": return `<div class="slide s-closing"><div class="bg light"></div><div class="huella" style="left:50%;top:50%;width:900px;height:900px;margin:-450px 0 0 -450px;opacity:.07"><img src="${HUELLA}" alt=""></div><div class="center">
+      <h2 ${A("up",.3)}>${esc(s.title.replace("💛",""))} <span class="heart">💛</span></h2><p ${A("up",.6)}>${esc(s.text)}</p>
+      <div ${A("zoom",1,"final")}>${esc(s.final)}</div></div></div>`;
+  }
+}
+
+const box=$("#slides"); box.innerHTML=SLIDES.map(render).join("");
+const els=[...box.children], bars=$("#bottom");
+bars.innerHTML=SLIDES.map(()=>"<i><b></b></i>").join("");
+const segs=[...bars.children];
+SLIDES.forEach(s=>{[s.photo,s.poster,...(s.people||[]).map(p=>p.photo)].forEach(u=>{if(u)new Image().src=u})});
+
+let cur=-1, timer=null, t0=0, remaining=DUR, paused=false, soundOK=false, raf=0;
+const video=$(".s-video video");
+
+function fit(){const k=Math.min(innerWidth/1920,innerHeight/1080);$("#stage").style.transform=`translate(-50%,-50%) scale(${k})`}
+addEventListener("resize",fit);fit();
+
+function progress(i,frac){segs.forEach((g,k)=>{g.classList.toggle("done",k<i);g.firstChild.style.width=k===i?(frac*100)+"%":""})}
+function tick(){cancelAnimationFrame(raf);const step=()=>{if(cur<0)return;let f;
+  if(SLIDES[cur].type==="video"){f=video.duration?video.currentTime/video.duration:0}
+  else{const el=paused?DUR-remaining:Date.now()-t0+(DUR-remaining);f=Math.min(1,el/DUR)}
+  progress(cur,f);raf=requestAnimationFrame(step)};step()}
+
+function schedule(ms){clearTimeout(timer);t0=Date.now();remaining=ms;timer=setTimeout(next,ms)}
+function next(){go((cur+1)%SLIDES.length)}
+function prev(){go((cur-1+SLIDES.length)%SLIDES.length)}
+
+function show(i){
+  els.forEach((e,k)=>{e.classList.toggle("on",k===i)});
+  // restart CSS animations on the incoming slide
+  const el=els[i];el.querySelectorAll(".a,.kb img,.caticon").forEach(n=>{n.style.animation="none";n.offsetWidth;n.style.animation=""});
+  cur=i;remaining=DUR;
+  document.body.classList.toggle("videomode",SLIDES[i].type==="video");if(SLIDES[i].type!=="video"){$("#start").classList.remove("show");$("#sound").classList.remove("show")}
+  if(SLIDES[i].type==="video"){playVideo()}else{video&&video.pause();schedule(DUR)}
+  tick();
+}
+function go(i){
+  if(i===cur)return;clearTimeout(timer);
+  const w=$("#wipe");w.classList.remove("go");void w.offsetWidth;w.classList.add("go");
+  setTimeout(()=>show(i),cur<0?0:480);
+}
+
+async function playVideo(){
+  clearTimeout(timer);video.currentTime=0;video.muted=!soundOK;
+  try{await video.play();if(!soundOK)$("#sound").classList.add("show")}
+  catch(e){video.muted=true;try{await video.play();$("#sound").classList.add("show")}catch(e2){if(e2.name==="NotAllowedError"){$("#start").classList.add("show");schedule(15000)}else{schedule(DUR)}return}}
+  timer=setTimeout(next,VIDEO_MAX);
+}
+if(video){video.addEventListener("ended",()=>{if(SLIDES[cur].type==="video")next()});video.addEventListener("error",()=>{if(SLIDES[cur].type==="video")schedule(DUR)})}
+
+function enableSound(){if(soundOK)return;soundOK=true;$("#sound").classList.remove("show");if(video&&SLIDES[cur]&&SLIDES[cur].type==="video"){video.muted=false;video.play().catch(()=>{})}}
+function togglePause(){
+  if(SLIDES[cur].type==="video"){video.paused?video.play():video.pause();return}
+  paused=!paused;document.body.classList.toggle("pause",paused);
+  if(paused){clearTimeout(timer);remaining-=Date.now()-t0}else{t0=Date.now();timer=setTimeout(next,remaining)}
+}
+function fullscreen(){const d=document.documentElement;(document.fullscreenElement?document.exitFullscreen():d.requestFullscreen&&d.requestFullscreen()).catch?.(()=>{})}
+
+$("#start").addEventListener("click",()=>{$("#start").classList.remove("show");soundOK=true;fullscreen();playVideo()});
+addEventListener("click",e=>{if(e.target.closest("#start"))return;enableSound()});
+addEventListener("keydown",e=>{enableSound();
+  if(e.key==="ArrowRight"||e.key==="PageDown")next();
+  else if(e.key==="ArrowLeft"||e.key==="PageUp")prev();
+  else if(e.key===" "){e.preventDefault();togglePause()}
+  else if(e.key==="f"||e.key==="F")fullscreen();
+  else if(e.key==="Enter"&&$("#start").classList.contains("show"))$("#start").click();
+});
+let idleT;addEventListener("mousemove",()=>{document.body.classList.remove("idle");clearTimeout(idleT);idleT=setTimeout(()=>document.body.classList.add("idle"),2500)});
+document.body.classList.add("idle");
+// keep the TV screen awake
+async function wake(){try{if("wakeLock" in navigator)await navigator.wakeLock.request("screen")}catch(e){}}
+wake();document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")wake()});
+
+go(0);
+</script>
+</body>
+</html>
