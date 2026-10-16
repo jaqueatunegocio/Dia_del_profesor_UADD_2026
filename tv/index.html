@@ -208,22 +208,23 @@ function go(i){
 }
 
 async function playVideo(){
-  // El video SIEMPRE se reproduce con sonido. Si el navegador lo bloquea,
-  // se espera en la pantalla de inicio hasta que alguien presione OK / haga clic.
-  clearTimeout(timer);$("#sound").classList.remove("show");
-  video.currentTime=0;video.muted=false;video.volume=1;
-  try{await video.play();soundOK=true;$("#start").classList.remove("show")}
+  // Siempre arranca solo. Intenta con sonido; si el navegador no lo permite,
+  // arranca igual en silencio (los subtítulos van en el video) y el sonido se
+  // activa con el primer clic o tecla. Nunca se queda detenido esperando.
+  clearTimeout(timer);$("#start").classList.remove("show");
+  video.currentTime=0;video.volume=1;video.muted=false;
+  try{await video.play();soundOK=true;$("#sound").classList.remove("show")}
   catch(e){
-    video.pause();video.currentTime=0;
-    if(e.name==="NotAllowedError"){$("#start").classList.add("show");return}
-    schedule(DUR);return;
+    video.muted=true;
+    try{await video.play();$("#sound").classList.add("show")}
+    catch(e2){schedule(DUR);return}
   }
   timer=setTimeout(next,VIDEO_MAX);
 }
 if(video){video.addEventListener("ended",()=>{if(SLIDES[cur].type==="video")next()});video.addEventListener("error",()=>{if(SLIDES[cur].type==="video")schedule(DUR)})}
 
 function startWithSound(){if(!$("#start").classList.contains("show"))return false;$("#start").classList.remove("show");fullscreen();playVideo();return true}
-function enableSound(){if(startWithSound())return;if(video&&SLIDES[cur]&&SLIDES[cur].type==="video"&&video.muted){video.muted=false}}
+function enableSound(){if(startWithSound())return;soundOK=true;$("#sound").classList.remove("show");if(video&&video.muted){video.muted=false}}
 function togglePause(){
   if(SLIDES[cur].type==="video"){video.paused?video.play():video.pause();return}
   paused=!paused;document.body.classList.toggle("pause",paused);
