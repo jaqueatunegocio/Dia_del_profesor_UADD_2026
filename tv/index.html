@@ -139,7 +139,7 @@ function qsize(t){const n=t.replace(/<[^>]+>/g,"").length;return n>620?30:n>460?
 
 function render(s,i){
   switch(s.type){
-  case "video": return `<div class="slide s-video"><video playsinline preload="auto" poster="${s.poster}" src="${s.src}"></video></div>`;
+  case "video": return `<div class="slide s-video"><video muted autoplay playsinline preload="auto" poster="${s.poster}" src="${s.src}"></video></div>`;
   case "cover": return `<div class="slide s-cover"><div class="bg"></div><div class="pad">
       <div ${A("left",.2,"eyebrow")}>${esc(s.eyebrow)}</div>
       <h1><span ${A("up",.4)}>Tu huella</span><span ${A("up",.6)}>deja huella</span></h1>
@@ -208,23 +208,16 @@ function go(i){
 }
 
 async function playVideo(){
-  // Siempre arranca solo. Intenta con sonido; si el navegador no lo permite,
-  // arranca igual en silencio (los subtítulos van en el video) y el sonido se
-  // activa con el primer clic o tecla. Nunca se queda detenido esperando.
-  clearTimeout(timer);$("#start").classList.remove("show");
-  video.currentTime=0;video.volume=1;video.muted=false;
-  try{await video.play();soundOK=true;$("#sound").classList.remove("show")}
-  catch(e){
-    video.muted=true;
-    try{await video.play();$("#sound").classList.add("show")}
-    catch(e2){schedule(DUR);return}
-  }
+  // El video se reproduce SIEMPRE sin audio y arranca solo.
+  clearTimeout(timer);$("#start").classList.remove("show");$("#sound").classList.remove("show");
+  video.muted=true;video.defaultMuted=true;video.currentTime=0;
+  try{await video.play()}catch(e){schedule(DUR);return}
   timer=setTimeout(next,VIDEO_MAX);
 }
 if(video){video.addEventListener("ended",()=>{if(SLIDES[cur].type==="video")next()});video.addEventListener("error",()=>{if(SLIDES[cur].type==="video")schedule(DUR)})}
 
 function startWithSound(){if(!$("#start").classList.contains("show"))return false;$("#start").classList.remove("show");fullscreen();playVideo();return true}
-function enableSound(){if(startWithSound())return;soundOK=true;$("#sound").classList.remove("show");if(video&&video.muted){video.muted=false}}
+function enableSound(){startWithSound()}
 function togglePause(){
   if(SLIDES[cur].type==="video"){video.paused?video.play():video.pause();return}
   paused=!paused;document.body.classList.toggle("pause",paused);
